@@ -1,12 +1,12 @@
-import * as functions from "firebase-functions";
-import * as admin from "firebase-admin";
+var functions = require("firebase-functions");
+var admin = require("firebase-admin");
 
 admin.initializeApp();
-const FIREBASE_COLLECTION_NAME = "<ADD_YOUR_COLLECTION_NAME_HERE>";
+var FIREBASE_COLLECTION_NAME = "<ADD_YOUR_COLLECTION_NAME_HERE>";
 
-exports.hekaWebhook = functions.https.onRequest((req, res) => {
-  const uuid = req.body.uuid;
-  const data = req.body.data;
+exports.hekaWebhook = functions.https.onRequest(function (req, res) {
+  var uuid = req.body.uuid;
+  var data = req.body.data;
 
   if (!uuid || !data) {
     // This is an error case, as "message" is required.
@@ -14,9 +14,12 @@ exports.hekaWebhook = functions.https.onRequest((req, res) => {
     return;
   }
 
-  for (const key of Object.keys(data)) {
-    const value = JSON.parse(JSON.stringify(data[key]));
-    for (const val of value) {
+  var keys = Object.keys(data);
+  for (var i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    var value = JSON.parse(JSON.stringify(data[key]));
+    for (var j = 0; j < value.length; j++) {
+      var val = value[j];
       val["start_time"] = admin.firestore.Timestamp.fromDate(
         new Date(val["start_time"])
       );
