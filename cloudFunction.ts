@@ -4,7 +4,7 @@ import * as admin from "firebase-admin";
 admin.initializeApp();
 const FIREBASE_COLLECTION_NAME = "<ADD_YOUR_COLLECTION_NAME_HERE>";
 
-exports.hekaWebhook = functions.https.onRequest((req, res) => {
+exports.hekaWebhook = functions.https.onRequest(async (req, res) => {
   const uuid = req.body.uuid;
   const data = req.body.data;
 
@@ -23,7 +23,7 @@ exports.hekaWebhook = functions.https.onRequest((req, res) => {
       val["end_time"] = admin.firestore.Timestamp.fromDate(
         new Date(val["end_time"])
       );
-      admin
+      await admin
         .firestore()
         .collection(FIREBASE_COLLECTION_NAME)
         .doc(uuid)
@@ -33,5 +33,5 @@ exports.hekaWebhook = functions.https.onRequest((req, res) => {
   }
 
   // Return a success response.
-  res.status(200).send("Success");
+  await res.status(200).send("Success");
 });
